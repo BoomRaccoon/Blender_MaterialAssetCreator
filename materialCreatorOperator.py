@@ -1,12 +1,12 @@
 bl_info = {
-    "name": "Vladi's Operators",
-    "description": "Create a MustardUI for a human character.",
-    "author": "Mustard",
-    "version": (0, 5, 0),
+    "name": "Material-Asset-Creator",
+    "description": "Scans through selected directory and creates material assets with textures",
+    "author": "BoomRaccoon",
+    "version": (0, 2, 0),
     "blender": (3, 0, 0),
     "warning": "",
-    "doc_url": "",
-    "category": "Object",
+    "doc_url": "https://github.com/BoomRaccoon/Blender_MaterialAssetCreator",
+    "category": "Material",
 }
 
 
@@ -25,13 +25,13 @@ from bpy.types import Operator
 
 
 # RegEx Patterns
-searchPatternDiffuse = re.compile(r'(diffuse|diff|basecolor|_base)|_color', re.I)
-searchPatternMetal = re.compile(r'(_metal)', re.I)
-searchPatternRoughness = re.compile(r'(_roughness|_rough)', re.I)
+searchPatternDiffuse = re.compile(r'(diffuse|diff|basecolor|_base)|_color\.', re.I)
+searchPatternMetal = re.compile(r'(_metal\.)', re.I)
+searchPatternRoughness = re.compile(r'(_roughness\.|_rough.)', re.I)
 searchPatternNormal = re.compile(r'(normal)', re.I)
 searchPatternSpecular = re.compile(r'(specular|spec)', re.I)
 searchPatternMask = re.compile(r'(mask)', re.I)
-searchPatternDisplacement = re.compile(r'(displacement|height)', re.I)
+searchPatternDisplacement = re.compile(r'(height|displace|bump)', re.I)
 
 
 def lookForTextures(path, materialPrefix, newObj):
@@ -138,9 +138,9 @@ class AddMaterialsToLibrary(Operator, ImportHelper):
     bl_label = "Create material assets"
 
     directory: bpy.props.StringProperty(
-    name="Outdir Path",
-    description="Select",
-    subtype="DIR_PATH",
+        name="Outdir Path",
+        description="Select",
+        subtype="DIR_PATH",
     )
     
     materialPrefix: StringProperty(
