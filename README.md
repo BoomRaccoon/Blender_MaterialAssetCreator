@@ -9,8 +9,9 @@ You can give the created Materials/Assets a Name.
 Leaving 'Material Prefix' empty will create materials with the standard blender naming convention of 'Material.XXX'.
 Material Prefix = 'Street' -> 'Street.XXX'
 Additionally you can set the strength and distance of the bump node.
-<div width=200>Strength/Distance = 1</div> | <div width=200>Strength = 0.25 Distance = 0.35)</div> | <div width=200> Strength = 0.6 Distance = 0.2 </dib> | <div width=200> Strength = 0.6 Distance = 0.6 </div> 
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+
+<div width=200>Strength/Distance = 1</div> | <div width=200>Strength = 0.25 Distance = 0.35)</div> | <div width=200> Strength = 0.6 Distance = 0.2 </dib> | <div width=200> Strength = 0.6 Distance = 0.6 </div> |
+| ---- | ---- | ---- |  ---- |
  <img src="images/defaultBump.jpg" alt="drawing" width="200"/> | <img src="images/customBump.jpg" alt="drawing" width="200"/> | <img src="images/strength.jpg" alt="drawing" width="200"/> | <img src="images/distance.jpg" alt="drawing" width="200"/>
 
 ---
