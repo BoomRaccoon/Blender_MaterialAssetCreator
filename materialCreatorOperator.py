@@ -34,13 +34,14 @@ searchPatternMask = re.compile(r'(mask)', re.I)
 searchPatternDisplacement = re.compile(r'(height|displace|bump)', re.I)
 
 
-def lookForTextures(path, materialPrefix, newObj):
+def lookForTextures(path, materialPrefix, newObj, specular, bumpStrength, bumpDistance):
     if not hasDir(path):            
         mat = bpy.data.materials.new(materialPrefix)
         mat.use_nodes = True
         matNodes = mat.node_tree.nodes
         matLinks = mat.node_tree.links
         shader = mat.node_tree.nodes["Principled BSDF"]
+        shader.inputs['Specular'] = specular
         
         for entry in os.scandir(path):
             if searchPatternDiffuse.search(entry.name):
@@ -82,6 +83,8 @@ def lookForTextures(path, materialPrefix, newObj):
                 nodeBump = matNodes.new(type="ShaderNodeBump")
                 nodeBump.hide = True
                 nodeBump.location = (-200, -290)
+                nodeBump.inputs['Strength'].default_value = bumpStrength
+                nodeBump.inputs['Distance'].default_value = bumpDistance
                 matLinks.new(nodeBump.inputs['Height'], tex.outputs['Color'])
             elif searchPatternNormal.search(entry.name):
                 bBump = False
@@ -143,10 +146,28 @@ class AddMaterialsToLibrary(Operator, ImportHelper):
         subtype="DIR_PATH",
     )
     
-    materialPrefix: StringProperty(
-        name="Material Prefix: MATERIAL.001",
-        description="Specify how what the prefix should be for the material",
+    materialPrefix: bpy.props.StringProperty(
+        name="Material Prefix",
+        description="Specify how what the prefix should be for the material.",
         default="Mat",
+    )
+
+    specular: bpy.props.FloatProperty(
+        name="Specular",
+        description="Amount of dielectric specular reflection. Specifies facing (along normal) reflectivity in the most common 0 - 8% range.",
+        default= 0.0,
+    )
+
+    bumpStrength: bpy.props.FloatProperty(
+        name="Bump strength",
+        description="Makes darker shadows. High values will make it ugly",
+        default= .25,
+    )
+
+    bumpDistance: bpy.props.FloatProperty(
+        name="Bump distance",
+        description=" High values will stop making changes (but will make it ugly at some point",
+        default= .35,
     )
 
     filter_folder: bpy.props.BoolProperty(default=True, options={"HIDDEN"})
@@ -161,7 +182,7 @@ class AddMaterialsToLibrary(Operator, ImportHelper):
             bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
             newObj = bpy.context.active_object
 
-        lookForTextures(self.directory, self.materialPrefix, newObj)
+        lookForTextures(self.directory, self.materialPrefix, newObj, self.specular, self.bumpDistance, self.bumpStrength)
 
         
         return {"FINISHED"}
