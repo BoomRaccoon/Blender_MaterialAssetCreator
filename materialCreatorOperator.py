@@ -40,8 +40,8 @@ def lookForTextures(path, materialPrefix, newObj, specular, bumpStrength, bumpDi
         mat.use_nodes = True
         matNodes = mat.node_tree.nodes
         matLinks = mat.node_tree.links
-        shader = mat.node_tree.nodes["Principled BSDF"]
-        shader.inputs['Specular'] = specular
+        bsdfNode = mat.node_tree.nodes["Principled BSDF"]
+        bsdfNode.inputs['Specular'].default_value = specular
         
         for entry in os.scandir(path):
             if searchPatternDiffuse.search(entry.name):
@@ -49,31 +49,31 @@ def lookForTextures(path, materialPrefix, newObj, specular, bumpStrength, bumpDi
                 tex.hide = True
                 tex.location = (-300, 185)
                 tex.image = bpy.data.images.load(entry.path)
-                matLinks.new(shader.inputs['Base Color'], tex.outputs['Color'])
+                matLinks.new(bsdfNode.inputs['Base Color'], tex.outputs['Color'])
             elif searchPatternMetal.search(entry.name):
                 tex = matNodes.new(type="ShaderNodeTexImage")
                 tex.hide = True
                 tex.location = (-300, 55)
                 tex.image = bpy.data.images.load(entry.path)
-                matLinks.new(shader.inputs['Metallic'], tex.outputs['Color'])
+                matLinks.new(bsdfNode.inputs['Metallic'], tex.outputs['Color'])
             elif searchPatternSpecular.search(entry.name):
                 tex = matNodes.new(type="ShaderNodeTexImage")
                 tex.hide = True
                 tex.location = (-300, 25)
                 tex.image = bpy.data.images.load(entry.path)
-                matLinks.new(shader.inputs['Specular'], tex.outputs['Color'])
+                matLinks.new(bsdfNode.inputs['Specular'], tex.outputs['Color'])
             elif searchPatternRoughness.search(entry.name):
                 tex = matNodes.new(type="ShaderNodeTexImage")
                 tex.hide = True
                 tex.location = (-300, -10)
                 tex.image = bpy.data.images.load(entry.path)
-                matLinks.new(shader.inputs['Roughness'], tex.outputs['Color'])
+                matLinks.new(bsdfNode.inputs['Roughness'], tex.outputs['Color'])
             elif searchPatternMask.search(entry.name):
                 tex = matNodes.new(type="ShaderNodeTexImage")
                 tex.hide = True
                 tex.location = (-300, -260)
                 tex.image = bpy.data.images.load(entry.path)
-                matLinks.new(shader.inputs['Alpha'], tex.outputs['Color'])
+                matLinks.new(bsdfNode.inputs['Alpha'], tex.outputs['Color'])
             elif searchPatternDisplacement.search(entry.name):
                 tex = matNodes.new(type="ShaderNodeTexImage")
                 tex.hide = True
@@ -103,9 +103,9 @@ def lookForTextures(path, materialPrefix, newObj, specular, bumpStrength, bumpDi
                 matLinks.new(nMap.inputs['Color'], tex.outputs['Color'])
                 if bBump:
                     matLinks.new(nodeBump.inputs['Normal'], nMap.outputs['Normal'])
-                    matLinks.new(nodeBump.outputs['Normal'], shader.inputs['Normal'])
+                    matLinks.new(nodeBump.outputs['Normal'], bsdfNode.inputs['Normal'])
                 else:
-                    matLinks.new(shader.inputs['Normal'], nMap.outputs['Normal'])
+                    matLinks.new(bsdfNode.inputs['Normal'], nMap.outputs['Normal'])
 
         # Assign it to object
         texCoord = matNodes.new(type="ShaderNodeTexCoord")
@@ -122,7 +122,7 @@ def lookForTextures(path, materialPrefix, newObj, specular, bumpStrength, bumpDi
     else:
         for entry in os.scandir(path):        
             if entry.is_dir():
-                lookForTextures(entry.path, materialPrefix, newObj)
+                lookForTextures(entry.path, materialPrefix, newObj, specular, bumpStrength, bumpDistance)
 
         
 
