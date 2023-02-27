@@ -1,3 +1,5 @@
+#I am currently not working with blender and therefore am not updating this
+
 ## Directory Structure
 ![Needed directory structure](/images/NeededDirectoryStructure.jpg)
 
